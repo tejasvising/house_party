@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from rest_framework import generics,status
 from .models import Room
 from .serializers import RoomSerializer, CreateRoomSerializer,UpdateRoomSerializer
@@ -42,7 +42,9 @@ class JoinRoom(APIView):
                 return Response({'message':'Room Joined!'},status=status.HTTP_200_OK)
             return Response({'Bad Request':'Invalid Room Code'},status=status.HTTP_400_BAD_REQUEST)    
         return Response({'Bad Request':'Invalid post data,did not find a code key'},status=status.HTTP_400_BAD_REQUEST)
-
+def mereq(self, request,format=None):
+    print("helo froom mereq")
+    return("")
 class CreateRoomView(APIView):
     serializer_class=CreateRoomSerializer
     def post(self,request,format=None):
@@ -61,20 +63,29 @@ class CreateRoomView(APIView):
                 room.votes_to_skip=votes_to_skip
                 room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
                 self.request.session['room_code']=room.code
+                #redirect('https://www.google.com')
                 return Response(RoomSerializer(room).data,status=status.HTTP_201_CREATED)
             else:
                 room=Room(host=host,guest_can_pause=guest_can_pause,votes_to_skip=votes_to_skip)
+                
                 room.save()
+                #return redirect('https://www.google.com')
+                self.request.session['room_code'] = room.code
                 return Response(RoomSerializer(room).data,status=status.HTTP_201_CREATED)
-            return Response({'Bad Request':'Invalid post data,did not find a code key'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Bad Request':'Invalid post data,did not find a code key'},status=status.HTTP_400_BAD_REQUEST)
 
 class UserInRoom(APIView): 
     def get(self, request,format=None):
         if not self.request.session.exists(self.request.session.session_key):
+            print("iamhereinsessioncreation")
             self.request.session.create()
+
+        
         data={
             'code':self.request.session.get('room_code'),
         }
+        print("data:",data)
+        print("data[code]: ",data['code'])
         return JsonResponse(data,status=status.HTTP_200_OK)   #converts python dictionary to JSON  
 
 class LeaveRoom(APIView):

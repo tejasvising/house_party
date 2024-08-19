@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import RoomJoinPage from "./RoomJoinPage";
 import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
+import Res from "./Res";
 import { Grid, Button, ButtonGroup, Typography } from "@mui/material";
 import {
   BrowserRouter as Router,
@@ -21,6 +22,7 @@ const HomePage = () => {
       try {
         const response = await fetch("/api/user-in-room");
         const data = await response.json();
+        console.log(data);
         setRoomCode(data.code);
       } catch (error) {
         console.error("Error fetching user room:", error);
@@ -73,6 +75,7 @@ const HomePage = () => {
   }
 />
         <Route path="/join/*" element={<RoomJoinPage/>} />
+        <Route path="/res/*" element={<Res/>} />
         <Route path="/create/" element={<CreateRoomPage/>} />
         <Route
             path="/room/:roomCode"

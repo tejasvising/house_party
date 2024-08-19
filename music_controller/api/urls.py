@@ -1,4 +1,4 @@
-from .views import RoomView,CreateRoomView,GetRoom,JoinRoom,UserInRoom,LeaveRoom,UpdateRoom
+from .views import *
 from django.urls import path
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path('user-in-room',UserInRoom.as_view()),
     path('leave-room',LeaveRoom.as_view()),
     path('update-room',UpdateRoom.as_view()),
+    path('mereq',mereq)
 ]
